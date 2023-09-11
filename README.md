@@ -8,7 +8,7 @@ Page TD : [https://mgasquet.github.io/R5.A.05-ProgrammationAvancee-Web/](https:/
 - TD1 : [https://mgasquet.github.io/R5.A.05-ProgrammationAvancee-Web/tutorials/tutorial1](https://mgasquet.github.io/R5.A.05-ProgrammationAvancee-Web/tutorials/tutorial1)
 - TD2 : [https://mgasquet.github.io/R5.A.05-ProgrammationAvancee-Web/tutorials/tutorial2](https://mgasquet.github.io/R5.A.05-ProgrammationAvancee-Web/tutorials/tutorial2)https://mgasquet.github.io/R5.A.05-ProgrammationAvancee-Web/tutorials/tutorial2
 
-Technologies utilisé :
+Langages/Technologies utilisé :
 - HTML/CSS
-- PHP
+- PHP (v8.0)
   - Symfony (v6.3.*)
