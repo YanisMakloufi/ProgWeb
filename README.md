@@ -1,6 +1,6 @@
 # ProgWeb
 
-Site réalisé en 3e année de BUT Informatique Option RACDV (Réalisation d'application : conception, développement, validation) \n
+Site réalisé en 3e année de BUT Informatique Option RACDV (Réalisation d'application : conception, développement, validation)
 
 Accéder au site publiquement : [https://webinfo.iutmontp.univ-montp2.fr/~makloufiy/ProgAvanceeWeb/TD1/public/](https://webinfo.iutmontp.univ-montp2.fr/~makloufiy/ProgAvanceeWeb/TD1/public/)
 
