@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+{% block page_title %}The Feed{% endblock %}
+{% block page_content %}
+<main id="the-feed-main">
+    <div id="feed">
+        {{ form_start(formulaire, {'attr' : {'id' : 'formulaire', 'class' : 'Publication'}}) }}
+        <fieldset>
+            <legend>Nouveau feedy</legend>
+            <div>
+                <!-- Le textarea généré, avec le placeholder "Qu'avez-vous en tête?" -->
+                {{ form_widget(formulaire.message, {'id': "msg", 'attr' : {"placeholder": "Qu'avez-vous en tête?"}}) }}
+            </div>
+            <div>
+                <!-- Le bouton de validation, possédant l'id "feedy-new-submit" et le label "Feeder!" -->
+                {{ form_widget(formulaire.publier, {'id': "feedy-new-submit", 'label' : "Feeder!"}) }}
+            </div>
+        </fieldset>
+        <!-- Génération des balises restantes (token CSRF) -->
+        {{ form_rest(formulaire) }}
+        <!-- Génération de la balise fermante </form> -->
+        {{ form_end(formulaire) }}
+
+        <!-- Pour chaque publication, afficher (avec une boucle) le code HTML ci-dessous !-->
+        {% for publication in publications %}
+        <div class="feedy">
+            <div class="feedy-header">
+                <a href="">
+                    <img class="avatar"
+                         src="{{ asset("img/utilisateurs/anonyme.jpg") }}"
+                         alt="avatar de l'utilisateur">
+                </a>
+                <div class="feedy-info">
+                    <span>Anonyme</span>
+                    <span> - </span>
+                    <span>{{ publication.getDatePublication()|date("d/m/Y") }}</span>
+                    <p>{{ publication.getMessage() }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <!-- Fin de la boucle -->
+    </div>
+</main>
+{% endblock %}
