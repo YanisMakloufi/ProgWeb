@@ -12,3 +12,4 @@ Langages/Technologies utilisé :
 - HTML/CSS
 - PHP (v8.0)
   - Symfony (v6.3.*)
+  - Twig
