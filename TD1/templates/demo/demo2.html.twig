@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Demo</title>
+    </head>
+
+    <body>
+    {% for flashMsg in app.flashes("success") %}
+        {{ flashMsg }}
+    {% endfor %}
+        Hello {{ nom }}
+    </body>
+</html>
