@@ -4,10 +4,9 @@ namespace App\Controller;
 
 use App\Form\PublicationType;
 use App\Repository\PublicationRepository;
-use App\Service\FlashMessageHelper;
 use App\Service\FlashMessageHelperInterface;
+use App\Service\UtilisateurManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
