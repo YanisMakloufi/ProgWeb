@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,6 +43,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nomPhotoProfil = null;
+
+    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Publication::class, orphanRemoval: "true")]
+    #[ORM\OrderBy(["datePublication" => "DESC"])]
+    private Collection $publications;
+
+    public function __construct()
+    {
+        $this->publications = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -132,6 +143,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNomPhotoProfil(?string $nomPhotoProfil): static
     {
         $this->nomPhotoProfil = $nomPhotoProfil;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Publication>
+     */
+    public function getPublications(): Collection
+    {
+        return $this->publications;
+    }
+
+    public function addPublication(Publication $publication): static
+    {
+        if (!$this->publications->contains($publication)) {
+            $this->publications->add($publication);
+            $publication->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removePublication(Publication $publication): static
+    {
+        if ($this->publications->removeElement($publication)) {
+            // set the owning side to null (unless already changed)
+            if ($publication->getAuteur() === $this) {
+                $publication->setAuteur(null);
+            }
+        }
 
         return $this;
     }

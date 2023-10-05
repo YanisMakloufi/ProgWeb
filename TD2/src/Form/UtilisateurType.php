@@ -21,10 +21,24 @@ class UtilisateurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('login', TextType::class)
+            ->add('login', TextType::class,[
+                "attr" => [
+                    "minlength" => 4,
+                    "maxlength" => 20
+                ]
+            ])
             ->add('adresseEmail', EmailType::class)
-            ->add('plainPassword', PasswordType::class, ["mapped" => false, "constraints" => [new NotBlank(), new NotNull()]])
-            ->add('fichierPhotoProfil', FileType::class, ["mapped" => false, "constraints" => [new File(maxSize: '10M', maxSizeMessage: "L'image envoyé dépasse les 10Mo", extensions: ['jpg', 'png'], extensionsMessage: "Le fichier n'est pas un .png ni un .jpg")]])
+            ->add('plainPassword', PasswordType::class, [
+                "mapped" => false,
+                "constraints" => [new NotBlank(), new NotNull()],
+                "attr" => [
+                    "pattern" =>  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,30}$",
+                    "minlength" => 8,
+                    "maxlength" => 30
+                ]])
+            ->add('fichierPhotoProfil', FileType::class, [
+                "mapped" => false,
+                "constraints" => [new File(maxSize: '10M', maxSizeMessage: "L'image envoyé dépasse les 10Mo", extensions: ['jpg', 'png'], extensionsMessage: "Le fichier n'est pas un .png ni un .jpg")]])
             ->add('inscription', SubmitType::class)
         ;
     }

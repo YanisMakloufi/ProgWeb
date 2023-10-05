@@ -29,6 +29,7 @@ class PublicationController extends AbstractController
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
+            $publi->setAuteur($this->getUser());
             // À ce stade, le formulaire et ses données sont valides
             // L'objet "Exemple" a été mis à jour avec les données, il ne reste plus qu'à le sauvegarder
             $entityManager->persist($publi);

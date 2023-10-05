@@ -9,8 +9,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UtilisateurManager implements UtilisateurManagerInterface {
 
     public function __construct(
-        #[Autowire('%dossier_photo_profil%')]
-        private string $dossier_photo_profil,
+        #[Autowire('%dossier_photo_profil%')] private string $dossier_photo_profil,
         private UserPasswordHasherInterface $passwordHasher
     ){}
 
@@ -28,7 +27,7 @@ class UtilisateurManager implements UtilisateurManagerInterface {
     private function sauvegarderPhotoProfil(Utilisateur $utilisateur, ?UploadedFile $fichierPhotoProfil) : void {
         if($fichierPhotoProfil != null) {
             $fileName = uniqid() . '.' . $fichierPhotoProfil->guessExtension();
-            $fichierPhotoProfil->move($dossier_photo_profil, $fileName);
+            $fichierPhotoProfil->move($this->dossier_photo_profil, $fileName);
             $utilisateur->setNomPhotoProfil($fileName);
         }
     }
