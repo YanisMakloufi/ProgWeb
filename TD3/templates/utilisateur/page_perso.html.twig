@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+ {% block page_title %}Page de {{ user.login }}{% endblock %}
+
+ {% block page_content %}
+     <main>
+         <div class="center">
+             <p id="titre-page-perso">Page de {{ user.login }}</p>
+         </div>
+         <div id="feed">
+             {% for publication in user.publications %}
+                 {{ include("publication/publication.html.twig", {'publication' : publication}) }}
+             {% endfor %}
+         </div>
+     </main>
+ {% endblock %}
+
+{% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script defer type="text/javascript" src="{{ asset("js/publications.js") }}"></script>
+{% endblock %}

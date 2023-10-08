@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>{% block page_title %}{% endblock %}</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="{{ asset("css/styles.css") }}">
+    </head>
+
+    <body>
+        <header>
+            <div id="titre" class="center">
+                <a href="{{ path('feed') }}"><span>The Feed</span></a>
+                <nav>
+                    <a href="{{ path('feed') }}">Accueil</a>
+                    {% if is_granted('ROLE_USER') %}
+                        <a href="{{ path("pagePerso", { 'login': app.user.login }) }}">Ma page</a>
+                        <form method="post" action="{{ path('deconnexion') }}">
+                            <button id="btn-deconnexion">Déconnexion</button>
+                        </form>
+                    {% else %}
+                        <a href="{{ path('connexion') }}">Connexion</a>
+                        <a href="{{ path('inscription') }}">Inscription</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
+
+        <div id="flashes-container">
+            <!-- Pour chaque message du type "success" -->
+            {% for flashMsgSuccess in app.flashes("success") %}
+                <span class="flashes flashes-success">{{ flashMsgSuccess }}</span>
+            {% endfor %}
+            <!-- Pour chaque message du type "error" -->
+            {% for flashMsgError in app.flashes("error") %}
+                <span class="flashes flashes-error">{{ flashMsgError }}</span>
+            {% endfor %}
+        </div>
+
+    {% block page_content %}
+    {% endblock %}
+    {% block scripts %}
+    {% endblock %}
+    </body>
+</html>

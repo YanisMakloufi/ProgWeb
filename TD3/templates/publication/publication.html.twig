@@ -1,0 +1,11 @@
+<div class="feedy-info">
+    <span {{ is_granted('ROLE_USER') and app.user.premium ? 'class="premium-login"' : "" }}>{{ publication.auteur.login }}</span>
+    <span> - </span>
+    <span>{{ publication.datePublication|date("d/m/Y") }}</span>
+    <p>{{ publication.message }}</p>
+    {% if is_granted('ROLE_USER') %}
+        {% if app.user.login == publication.auteur.login %}
+            <button class="delete-feedy" data-publication-id="{{ publication.id }}">Supprimer</button>
+        {% endif %}
+    {% endif %}
+</div>

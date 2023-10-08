@@ -1,0 +1,47 @@
+{% extends "base.html.twig" %}
+{% block page_title %}The Feed{% endblock %}
+{% block page_content %}
+<main id="the-feed-main">
+    <div id="feed">
+        {% if is_granted('ROLE_USER') %}
+            {{ form_start(formulaire, {'attr' : {'id' : 'formulaire', 'class' : 'Publication'}}) }}
+            <fieldset>
+                <legend>Nouveau feedy</legend>
+                <div>
+                    <!-- Le textarea généré, avec le placeholder "Qu'avez-vous en tête?" -->
+                    {{ form_widget(formulaire.message, {'id': "msg", 'attr' : {"placeholder": "Qu'avez-vous en tête?"}}) }}
+                </div>
+                <div>
+                    <!-- Le bouton de validation, possédant l'id "feedy-new-submit" et le label "Feeder!" -->
+                    {{ form_widget(formulaire.publier, {'id': "feedy-new-submit", 'label' : "Feeder!"}) }}
+                </div>
+            </fieldset>
+            <!-- Génération des balises restantes (token CSRF) -->
+            {{ form_rest(formulaire) }}
+            <!-- Génération de la balise fermante </form> -->
+            {{ form_end(formulaire) }}
+        {% endif %}
+
+        <!-- Pour chaque publication, afficher (avec une boucle) le code HTML ci-dessous !-->
+        {% for publication in publications %}
+        <div class="feedy">
+            <div class="feedy-header">
+                <a href="{{ path("pagePerso", { 'login': publication.auteur.login }) }}">
+                    <img class="avatar"
+                         src="{{ asset(publication.auteur.nomPhotoProfil is not null ? "img/utilisateurs/uploads/" ~ publication.auteur.nomPhotoProfil : "img/utilisateurs/anonyme.jpg") }}"
+                         alt="avatar de l'utilisateur">
+                </a>
+                {{ include("publication/publication.html.twig", {'publication' : publication}) }}
+            </div>
+        </div>
+        {% endfor %}
+        <!-- Fin de la boucle -->
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script defer type="text/javascript" src="{{ asset("js/publications.js") }}"></script>
+{% endblock %}
