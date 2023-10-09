@@ -30,7 +30,11 @@ class PublicationType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $group = $this->security->getUser()->isPremium() ? 'publication:write:premium' : 'publication:write:normal';
+        if(!is_null($this->security->getUser())){
+            $group = $this->security->getUser()->isPremium() ? 'publication:write:premium' : 'publication:write:normal';
+        }else{
+            $group = "";
+        }
         $resolver->setDefaults([
             'data_class' => Publication::class,
             'validation_groups' => ['Default', $group]

@@ -13,6 +13,9 @@
                 <nav>
                     <a href="{{ path('feed') }}">Accueil</a>
                     {% if is_granted('ROLE_USER') %}
+                        {% if not app.user.isPremium() %}
+                            <a href="{{ path('premiumInfos') }}">Premium</a>
+                        {% endif %}
                         <a href="{{ path("pagePerso", { 'login': app.user.login }) }}">Ma page</a>
                         <form method="post" action="{{ path('deconnexion') }}">
                             <button id="btn-deconnexion">Déconnexion</button>
