@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\PaymentHandlerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,5 +16,11 @@ class PremiumController extends AbstractController
     public function premiumInfos(): Response
     {
         return $this->render('premium/premium-infos.html.twig', []);
+    }
+
+    #[Route('/premium/checkout', name: 'premiumCheckout', methods: ['GET'])]
+    public function premiumCheckout(PaymentHandlerInterface $paymentHandler): Response
+    {
+        return $this->redirect($paymentHandler->getPremiumCheckoutUrlFor($this->getUser()));
     }
 }

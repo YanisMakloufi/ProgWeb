@@ -6,6 +6,8 @@
 parameters:
     dossier_photo_profil : '%kernel.project_dir%/public/img/utilisateurs/uploads'
     premium_price : 100
+    cle_stripe : '%env(string:CLE_STRIPE)%'
+    webhook : '%env(string:WEBHOOK)%'
 
 services:
     # default configuration for services in *this* file
