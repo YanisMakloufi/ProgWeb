@@ -50,7 +50,7 @@ class PublicationController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/feedy/{id}', name: 'deletePublication ', options: ["expose" => true], methods: ["DELETE"])]
-    public function deletePublication(Request $request, PublicationRepository $publicationRepository, EntityManagerInterface $entityManager, $id): Response
+    public function deletePublication(PublicationRepository $publicationRepository, EntityManagerInterface $entityManager, $id): Response
     {
         $publi = $publicationRepository->find($id);
 

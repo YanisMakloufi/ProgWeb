@@ -5,7 +5,7 @@
     <p>{{ publication.message }}</p>
     {% if is_granted('ROLE_USER') %}
         {% if app.user.login == publication.auteur.login %}
-            <button class="delete-feedy" data-publication-id="{{ publication.id }}">Supprimer</button>
+            <button class="delete-feedy" data-publication-id="{{ publication.id }}"><img src="{{ asset("img/icon/trash.png") }}"></button>
         {% endif %}
     {% endif %}
 </div>

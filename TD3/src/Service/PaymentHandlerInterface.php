@@ -11,4 +11,6 @@ interface PaymentHandlerInterface
 
     public function handlePaymentPremium(Session $session) : void;
 
-    }
+    public function checkPaymentStatus($sessionId) : bool;
+
+}

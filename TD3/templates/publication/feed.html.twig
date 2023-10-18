@@ -4,9 +4,8 @@
 <main id="the-feed-main">
     <div id="feed">
         {% if is_granted('ROLE_USER') %}
-            {{ form_start(formulaire, {'attr' : {'id' : 'formulaire', 'class' : 'Publication'}}) }}
+            {{ form_start(formulaire, {'attr' : {'id' : 'feedy-new'}}) }}
             <fieldset>
-                <legend>Nouveau feedy</legend>
                 <div>
                     <!-- Le textarea généré, avec le placeholder "Qu'avez-vous en tête?" -->
                     {{ form_widget(formulaire.message, {'id': "msg", 'attr' : {"placeholder": "Qu'avez-vous en tête?"}}) }}

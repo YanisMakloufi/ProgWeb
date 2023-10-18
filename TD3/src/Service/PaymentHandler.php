@@ -27,7 +27,7 @@ class PaymentHandler implements PaymentHandlerInterface
             'mode' => 'payment',
             'payment_intent_data' => ['capture_method' => 'manual', 'receipt_email' => $utilisateur->getAdresseEmail()],
             'customer_email' => $utilisateur->getAdresseEmail(),
-            'success_url' => $this->router->generate("feed", [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'success_url' => $this->router->generate('premiumCheckoutConfirm', [], UrlGeneratorInterface::ABSOLUTE_URL).'?idStripe={CHECKOUT_SESSION_ID}',
             'cancel_url' => $this->router->generate("premiumInfos", [], UrlGeneratorInterface::ABSOLUTE_URL),
             "metadata" => ["utilisateurId" => $utilisateur->getId(),
                             "student_token" => "YanisM"],
@@ -53,7 +53,7 @@ class PaymentHandler implements PaymentHandlerInterface
 
         //Avant d'extraire une donnée, on peut bien sûr vérifier sa présence...
         if(!isset($metadata["utilisateurId"])) {
-            throw new \Exception("dataExemple manquant...");
+            throw new \Exception("utilisateurId manquant...");
         }
         if(!isset($metadata["student_token"]) || $metadata["student_token"] !== "YanisM") {
             throw new \Exception("Requête d'un autre étudiant...");
@@ -62,32 +62,52 @@ class PaymentHandler implements PaymentHandlerInterface
         //L'objet "paymentIntent" permet de capturer (confirmer) ou d'annuler le paiement.
         $paymentIntent = $session["payment_intent"];
         //Pour réaliser ces opérations, on a besoin d'un objet StripeClient initialisé avec notre clé secrète d'API.
-        $stripe = new StripeClient("rk_test_51Nc8uXEp6uTefSZxIkb3Tc5cYHss1CzJ1XcAokd3i1rjQf6KkvrkMxhuj3uZiP28t2FMVqj5jk4BFP9zgox1wVGj00PWT6x2CK");
+        $stripe = new StripeClient($this->cle_stripe);
 
         //Pour annuler le paiement
         //$stripe->paymentIntents->cancel($paymentIntent);
 
         //Pour "capturer" et valider le paiement
         $paymentCapture = $stripe->paymentIntents->capture($paymentIntent, []);
-        //On peut ensuite vérifier si le paiement a bien été capturé (si oui, on dispose de l'argent sur le compte Stripe, à ce stade).
-        if($paymentCapture == null || $paymentCapture["status"] != "succeeded") {
-            $stripe->paymentIntents->cancel($paymentIntent);
-            throw new \Exception("Le paiement n'a pas pu être complété...");
-        }
 
         //Après avoir fait diverses vérifications et avoir capturé le paiement avec succès, on peut réaliser nos actions complémentaires (dans notre cas, mettre l'attribut "premium" de l'utilisateur cible à true, puis sauvegarder).
         $userId = $metadata["utilisateurId"];
         $user = $this->utilisateurRepository->find($userId);
         if(is_null($user)){
             $stripe->paymentIntents->cancel($paymentIntent);
+            throw new \Exception("L'utilisateur n'existe pas");
         }
 
         if($user->isPremium()){
             $stripe->paymentIntents->cancel($paymentIntent);
+            throw new \Exception("L'utilisateur est déjà premium");
+        }
+
+        //On peut ensuite vérifier si le paiement a bien été capturé (si oui, on dispose de l'argent sur le compte Stripe, à ce stade).
+        if($paymentCapture == null || $paymentCapture["status"] != "succeeded") {
+            $stripe->paymentIntents->cancel($paymentIntent);
+            throw new \Exception("Le paiement n'a pas pu être complété...");
         }
 
         $user->setPremium(true);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+    }
+
+    public function checkPaymentStatus($sessionId) : bool {
+        //On initialise le client Stripe avec notre clé secrète
+        $stripe = new StripeClient($this->cle_stripe);
+
+        //On récupère les données de la session à partir de l'identifiant de la session
+        $session = $stripe->checkout->sessions->retrieve($sessionId);
+
+        //On extraie l'identifiant du paiement depuis la session
+        $paymentIntentId = $session->payment_intent;
+
+        //On récupère les données du paiement
+        $paymentIntent = $stripe->paymentIntents->retrieve($paymentIntentId);
+
+        //L'état "succeeded" signifie que le paiement a bien été capturé (le client a été débité)
+        return $paymentIntent->status;
     }
 }
