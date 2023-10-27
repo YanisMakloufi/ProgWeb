@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(operations: [
@@ -24,19 +25,22 @@ use Symfony\Component\Validator\Constraints as Assert;
     new Delete(),
     new Post(),
     new GetCollection(),
-    new Patch()])]
+    new Patch()],
+    normalizationContext: ["groups" => ["utilisateur:read"]])]
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 class Utilisateur implements UserInterface/*, PasswordAuthenticatedUserInterface*/
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['etudiant:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotNull]
     #[Assert\NotBlank]
     #[Assert\Length(min: 4, max: 20, minMessage: 'Il faut au moins 4 caractères!', maxMessage: 'Il faut moins de 20 caractères')]
+    #[Groups(['etudiant:read'])]
     private ?string $login = null;
 
     #[ORM\Column]
@@ -52,10 +56,12 @@ class Utilisateur implements UserInterface/*, PasswordAuthenticatedUserInterface
     #[Assert\Email()]
     #[Assert\NotNull]
     #[Assert\NotBlank]
+    #[Groups(['etudiant:read', 'publication:read'])]
     private ?string $adresseEmail = null;
 
     #[ORM\Column(options: ["default" => false])]
     #[ApiProperty(writable: false)]
+    #[Groups(['etudiant:read', 'publication:read'])]
     private ?bool $premium = false;
 
     #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Publication::class, orphanRemoval: true)]

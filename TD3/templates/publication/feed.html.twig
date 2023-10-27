@@ -7,7 +7,9 @@
             {{ form_start(formulaire, {'attr' : {'id' : 'feedy-new'}}) }}
             <fieldset>
                 <div>
-                    <!-- Le textarea généré, avec le placeholder "Qu'avez-vous en tête?" -->
+                    <img style="float: left" class="avatar"
+                         src="{{ asset(app.user.nomPhotoProfil is not null ? "img/utilisateurs/uploads/" ~ app.user.nomPhotoProfil : "img/utilisateurs/anonyme.jpg") }}"
+                         alt="avatar de l'utilisateur">                    <!-- Le textarea généré, avec le placeholder "Qu'avez-vous en tête?" -->
                     {{ form_widget(formulaire.message, {'id': "msg", 'attr' : {"placeholder": "Qu'avez-vous en tête?"}}) }}
                 </div>
                 <div>

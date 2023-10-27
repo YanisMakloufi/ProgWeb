@@ -29,6 +29,9 @@
         </header>
 
         <div id="flashes-container">
+            <span class="flashes flashes-success">Test</span>
+            <span class="flashes flashes-success">Test</span>
+
             <!-- Pour chaque message du type "success" -->
             {% for flashMsgSuccess in app.flashes("success") %}
                 <span class="flashes flashes-success">{{ flashMsgSuccess }}</span>
