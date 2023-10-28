@@ -10,25 +10,24 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\UtilisateurRepository;
+use App\State\UtilisateurProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(operations: [
     new Get(),
     new Delete(),
-    new Post(),
+    new Post(processor: UtilisateurProcessor::class),
     new GetCollection(),
     new Patch()],
     normalizationContext: ["groups" => ["utilisateur:read"]])]
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur implements UserInterface/*, PasswordAuthenticatedUserInterface*/
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -49,8 +48,15 @@ class Utilisateur implements UserInterface/*, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    /*#[ORM\Column]
-    private ?string $password = null;*/
+    #[ORM\Column]
+    #[ApiProperty(writable: false, readable: false)]
+    private ?string $password = null;
+
+    #[Assert\Regex(pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,30}$^")]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8, max: 30)]
+    private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\Email()]
@@ -121,7 +127,7 @@ class Utilisateur implements UserInterface/*, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    /*public function getPassword(): string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -131,15 +137,26 @@ class Utilisateur implements UserInterface/*, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
-    }*/
+    }
+
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
 
     /**
      * @see UserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getAdresseEmail(): ?string

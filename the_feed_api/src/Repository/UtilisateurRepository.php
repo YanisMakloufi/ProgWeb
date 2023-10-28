@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  * @method Utilisateur[]    findAll()
  * @method Utilisateur[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UtilisateurRepository extends ServiceEntityRepository /*implements PasswordUpgraderInterface*/
+class UtilisateurRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -29,7 +29,7 @@ class UtilisateurRepository extends ServiceEntityRepository /*implements Passwor
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
-    /*public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof Utilisateur) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
@@ -38,7 +38,7 @@ class UtilisateurRepository extends ServiceEntityRepository /*implements Passwor
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
-    }*/
+    }
 
 //    /**
 //     * @return Utilisateur[] Returns an array of Utilisateur objects
