@@ -21,10 +21,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(operations: [
     new Get(),
-    new Delete(),
-    new Post(processor: UtilisateurProcessor::class),
+    new Delete(security: "is_granted('ROLE_USER') and object.getOwner() == user"),
+    new Post(denormalizationContext: ["groups" => ["utilisateur:create"]], validationContext: ["groups" => ["Default", "utilisateur:create"]], processor: UtilisateurProcessor::class),
     new GetCollection(),
-    new Patch()],
+    new Patch(denormalizationContext: ["groups" => ["utilisateur:update"]],
+        security: "is_granted('ROLE_USER') and object.getOwner() == user",
+        validationContext: ["groups" => ["Default", "utilisateur:update"]])],
     normalizationContext: ["groups" => ["utilisateur:read"]])]
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
@@ -32,14 +34,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['etudiant:read'])]
+    #[Groups(['utilisateur:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotNull]
     #[Assert\NotBlank]
     #[Assert\Length(min: 4, max: 20, minMessage: 'Il faut au moins 4 caractères!', maxMessage: 'Il faut moins de 20 caractères')]
-    #[Groups(['etudiant:read'])]
+    #[Groups(['utilisateur:read', "utilisateur:create"])]
     private ?string $login = null;
 
     #[ORM\Column]
@@ -53,8 +55,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\Regex(pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,30}$^")]
-    #[Assert\NotNull]
-    #[Assert\NotBlank]
+    #[Assert\NotNull(groups: ['utilisateur:create'])]
+    #[Assert\NotBlank(groups: ['utilisateur:create'])]
     #[Assert\Length(min: 8, max: 30)]
     private ?string $plainPassword = null;
 
@@ -62,12 +64,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email()]
     #[Assert\NotNull]
     #[Assert\NotBlank]
-    #[Groups(['etudiant:read', 'publication:read'])]
+    #[Groups(['utilisateur:read', 'publication:read', "utilisateur:create", "utilisateur:update"])]
     private ?string $adresseEmail = null;
 
     #[ORM\Column(options: ["default" => false])]
     #[ApiProperty(writable: false)]
-    #[Groups(['etudiant:read', 'publication:read'])]
+    #[Groups(['utilisateur:read', 'publication:read', "utilisateur:create", "utilisateur:update"])]
     private ?bool $premium = false;
 
     #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Publication::class, orphanRemoval: true)]

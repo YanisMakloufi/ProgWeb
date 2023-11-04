@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use App\Repository\PublicationRepository;
+use App\State\UtilisateurProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -28,8 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
     ),
         new Get(),
-        new Delete(),
-        new Post(),
+        new Delete(security: "is_granted('ROLE_USER') and object.getOwner() == user"),
+        new Post(security: "is_granted('ROLE_USER')", processor: UtilisateurProcessor::class),
         new GetCollection()], normalizationContext: ["groups" => ["publication:read"]],
     order: ["datePublication" => "DESC"])]
 class Publication
